@@ -16,11 +16,21 @@
 //Declarative Syntax
 pipeline {
 	agent any
+	environment {
+
+		// We want to take Home Path for boot the tools
+		// Add to Our Environment path
+		dockerHome = tool 'myDocker'
+		mavenHome = tool 'myMaven'
+		// This will add both maven and docker bin folder path to the our env path
+		PATH = "$dockerHome/bin:$mavenHome/bin:$PATH"  
+	}
 	//agent { docker { image 'maven:3.6.3'} }
 	stages {
 		stage('Build') {
 			steps {
-				//sh 'mvn --version'
+				sh 'mvn --version'
+				sh 'docker version'
 				echo "$PATH"
 				echo "BUILD_ID - $env.BUILD_ID"
 				echo "JOB_NAME - $env.JOB_NAME"
