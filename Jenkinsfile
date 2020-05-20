@@ -55,6 +55,42 @@ pipeline {
 				sh 'mvn failsafe:integration-test failsafe:verify'
 			}
 		}
+		stage('Build Docker Image') {
+			steps {
+				// This is the Declarative way of calling
+				// sh 'docker build -t satish4228/currency-exchange-service-from-jenkins:$env.BUILD_TAG'
+
+				//The above can be achived by using the function aswell.
+				script{
+					dockerImage = docker.build("satish4228/currency-exchange-service-from-jenkins:${env.BUILD_TAG}")
+				}
+			}
+		}
+
+		//But Jenkins want to connect your docker hub
+		stage ('package') {
+			steps{
+				script{
+					sh 'mvn package -DskipTests'
+				}
+			}
+		}
+
+
+		stage('Push Docker Image'){
+			steps {
+				script{
+
+					docker.withRegistry ('', 'dockerhub') {
+
+					
+					dockerImage.push();
+					//For a latesh push use 
+					dockerImage.push('latest')
+					}
+				}
+			}
+		}
 	} 
 
 	post {
