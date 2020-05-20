@@ -27,7 +27,7 @@ pipeline {
 	}
 	//agent { docker { image 'maven:3.6.3'} }
 	stages {
-		stage('Build') {
+		stage('CheckOut') {
 			steps {
 				sh 'mvn --version'
 				sh 'docker version'
@@ -39,9 +39,20 @@ pipeline {
 			}
 		}
 
+		stage('Compile') {
+			steps {
+				sh 'mvn clean install'
+			}
+		}
+
 		stage('Test') {
 			steps {
-				echo "Test"
+				sh 'mvn test'
+			}
+		}
+		stage('Integration test') {
+			steps {
+				sh 'mvn failsafe:integration-test failsafe:verify'
 			}
 		}
 	} 
