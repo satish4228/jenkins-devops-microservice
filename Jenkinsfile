@@ -27,7 +27,8 @@ pipeline {
 				echo "Test"
 			}
 		}
-	} post {
+	} 
+	post {
 		always {
 			echo "Always I will run"
 		}
